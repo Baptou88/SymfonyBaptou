@@ -16,6 +16,14 @@
                 <td>{{ project.code }}</td>
             </tr>
             <tr>
+                <th>Client</th>
+                <td>{{ project.client.name }}</td>
+            </tr>
+            <tr>
+                <th>Type project</th>
+                <td>{{ project.typeproject }}</td>
+            </tr>
+            <tr>
                 <th>CreatedAt</th>
                 <td>{{ project.createdAt ? project.createdAt|date('Y-m-d H:i:s') : '' }}</td>
             </tr>

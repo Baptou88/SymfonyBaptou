@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Project;
+use App\Entity\ProjectSearch;
+use App\Form\ProjectSearchType;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,11 +17,42 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/project')]
 class ProjectController extends AbstractController
 {
-    #[Route('/', name: 'project_index', methods: ['GET'])]
-    public function index(ProjectRepository $projectRepository): Response
+    private ProjectRepository $repository;
+    private EntityManagerInterface $em;
+
+    /**
+     * @param ProjectRepository $repository
+     * @param EntityManagerInterface $em
+     */
+    public function __construct(ProjectRepository $repository, EntityManagerInterface $em)
     {
+        $this->repository = $repository;
+        $this->em = $em;
+    }
+
+    /**
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/', name: 'project_index', methods: ['GET'])]
+    public function index(PaginatorInterface $paginator, Request $request): Response
+    {
+        $search = new ProjectSearch();
+        $form = $this->createForm(ProjectSearchType::class,$search);
+        $form->handleRequest($request);
+
+        $query = $this->repository->findAllVisible($search);
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page',1),
+            10
+        );
         return $this->render('project/index.html.twig', [
-            'projects' => $projectRepository->findAll(),
+            'current_menu' => 'projects',
+            'projects' => $pagination,
+            'form' => $form->createView()
         ]);
     }
 
