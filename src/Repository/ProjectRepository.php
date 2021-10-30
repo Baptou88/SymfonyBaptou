@@ -26,8 +26,9 @@ class ProjectRepository extends ServiceEntityRepository
     public function findAllVisible(ProjectSearch $search):Query
     {
         $query = $this->createQueryBuilder('p');
-        $query = $query->innerJoin(Client::class,'c');
-        $query = $query->innerJoin(TypeProject::class,'t');
+        $query = $query->innerJoin('p.client','c');
+        $query = $query->select('p','c');
+        //$query = $query->innerJoin(TypeProject::class,'t');
         if ($search->getTypeProject()->count()>0)
         {
             $query = $query

@@ -47,7 +47,7 @@ class ProjectController extends AbstractController
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page',1),
-            10
+            $request->query->get('n',20),
         );
         return $this->render('project/index.html.twig', [
             'current_menu' => 'projects',
