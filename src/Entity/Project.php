@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProjectRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
+
 class Project
 {
     /**
@@ -44,6 +47,22 @@ class Project
      */
     private $client;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $description;
+
+
+    public function __construct()
+    {
+
+    }
+
+    public function __toString(): string
+    {
+        return $this->code;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,11 +85,32 @@ class Project
         return $this->createdAt;
     }
 
+    /**
+     * @param \DateTimeImmutable $createdAt
+     * @return $this
+     */
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function setModifiedAtValue()
+    {
+        dump("ok");
+        $this->ModifiedAt = new \DateTimeImmutable();
     }
 
     public function getModifiedAt(): ?\DateTimeImmutable
@@ -105,6 +145,18 @@ class Project
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

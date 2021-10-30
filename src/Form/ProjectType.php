@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Client;
 use App\Entity\Project;
 use App\Entity\TypeProject;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -20,7 +21,9 @@ class ProjectType extends AbstractType
             ->add('TypeProject',EntityType::class,[
                 'class'=>TypeProject::class
             ])
-            ->add('client')
+            ->add('client', EntityType::class,[
+                'class' => Client::class
+            ])
         ;
     }
 

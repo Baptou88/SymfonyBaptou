@@ -4,13 +4,18 @@
 
 {% block body %}
     <h1>Project index</h1>
-
+    <div class="container">
+        {{ form_start(form) }}
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </div>
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Code</th>
-                <th>CreatedAt</th>
+                <th>Client</th>
+                <th>Type project</th>
                 <th>ModifiedAt</th>
                 <th>actions</th>
             </tr>
@@ -20,7 +25,8 @@
             <tr>
                 <td>{{ project.id }}</td>
                 <td>{{ project.code }}</td>
-                <td>{{ project.createdAt ? project.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ project.client.name }}</td>
+                <td>{{ project.typeproject }}</td>
                 <td>{{ project.ModifiedAt ? project.ModifiedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('project_show', {'id': project.id}) }}">show</a>
@@ -35,5 +41,8 @@
         </tbody>
     </table>
 
-    <a href="{{ path('project_new') }}">Create new</a>
+    <a class="btn btn-success" href="{{ path('project_new') }}">Create new</a>
+    <div class="container">
+        {{ knp_pagination_render(projects) }}
+    </div>
 {% endblock %}
