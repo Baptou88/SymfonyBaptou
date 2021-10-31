@@ -4,11 +4,15 @@ namespace App\Form;
 
 use App\Entity\Client;
 use App\Entity\Project;
+use App\Entity\ProjectDocuments;
 use App\Entity\TypeProject;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ProjectType extends AbstractType
 {
@@ -24,6 +28,11 @@ class ProjectType extends AbstractType
             ->add('client', EntityType::class,[
                 'class' => Client::class
             ])
+            ->add('docFiles', FileType::class, [
+                'required' => false,
+                'multiple' => true
+            ])
+            
         ;
     }
 

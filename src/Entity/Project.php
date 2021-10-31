@@ -4,11 +4,15 @@ namespace App\Entity;
 
 
 use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=ProjectRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ * @Vich\Uploadable()
  */
 
 class Project
@@ -52,10 +56,18 @@ class Project
      */
     private $description;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=ProjectDocuments::class, inversedBy="projects", orphanRemoval=true, cascade={"persist"})
+     *
+     */
+    private  $doc;
+
+    private $docFiles;
+
 
     public function __construct()
     {
-
+        $this->doc = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -159,5 +171,52 @@ class Project
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * @return Collection
+     *
+     */
+    public function getDoc(): Collection
+    {
+        return $this->doc;
+    }
+
+    public function addDoc(ProjectDocuments $doc): self
+    {
+        if (!$this->doc->contains($doc)) {
+            $this->doc[] = $doc;
+        }
+
+        return $this;
+    }
+
+    public function removeDoc(ProjectDocuments $doc): self
+    {
+        $this->doc->removeElement($doc);
+
+        return $this;
+    }
+
+    /**
+     * @param $documents
+     * @return Project
+     */
+    public function setDocFiles($documents): self
+    {
+        foreach($documents as $document) {
+            $doc = new ProjectDocuments();
+            $doc->setdocFile($document);
+            $this->addDoc($doc);
+        }
+        $this->docFiles = $documents;
+        return $this;
+    }
+    /**
+     * @return mixed
+     */
+    public function getDocFiles()
+    {
+        return $this->docFiles;
     }
 }
