@@ -64,3 +64,28 @@ function bindSelect(select){
 }
 
 Array.from(document.querySelectorAll('select[multiple]')).map(bindSelect)
+
+document.querySelectorAll('.delete_doc').forEach(a => {
+    console.log(a)
+    a.addEventListener('click' , e => {
+        e.preventDefault()
+        fetch(a.getAttribute('href'),{
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With':'XMLHttpRequest',
+                'Content-Type': 'application/json'
+
+            },
+
+        }).then(response => response.json())
+            .then(data =>{
+                if (data.success){
+                    a.parentNode.parentNode.parentNode.removeChild(a.parentNode.parentNode)
+                }else{
+                    alert(data.error)
+                }
+            })
+            .catch(e=>alert(e))
+
+    })
+})

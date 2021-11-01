@@ -12,15 +12,19 @@
         <thead>
         <tr>
             <td>Name</td>
-            <td>Actions</td>
+            <td colspan="2">Actions</td>
         </tr>
         </thead>
         <tbody>
         {% for doc in project.doc %}
             <tr>
                 <td>{{ doc.docname }}</td>
+{#                <td>#}
+{#                    {{ include('project/_filedelete.html.twig') }}#}
+{#                </td>#}
                 <td>
-                    {{ include('project/_filedelete.html.twig') }}
+{#                    <button class="delete_doc btn btn-outline-danger">supprimer</button>#}
+                    <a class="delete_doc btn btn-outline-danger" href="{{ path('project_doc_delete' , {'id':doc.id }) }}">supprimer</a>
                 </td>
                 <td>
                     <a class="btn-secondary btn"     href="{{ vich_uploader_asset(doc) }}">download</a>
@@ -40,6 +44,11 @@
 
 
 
+
+{% endblock %}
+
+{% block javascript %}
+    console.log()
 
 {% endblock %}
 
