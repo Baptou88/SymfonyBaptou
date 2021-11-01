@@ -65,6 +65,12 @@ function bindSelect(select){
 
 Array.from(document.querySelectorAll('select[multiple]')).map(bindSelect)
 
+// ClassicEditor
+//     .create( document.querySelector( '#editor' ) )
+//     .catch( error => {
+//         console.error( error );
+//     } );
+
 document.querySelectorAll('.delete_doc').forEach(a => {
     console.log(a)
     a.addEventListener('click' , e => {
