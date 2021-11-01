@@ -6,6 +6,7 @@ use App\Entity\Client;
 use App\Entity\Project;
 use App\Entity\ProjectDocuments;
 use App\Entity\TypeProject;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -31,6 +32,17 @@ class ProjectType extends AbstractType
             ->add('docFiles', FileType::class, [
                 'required' => false,
                 'multiple' => true
+            ])
+            ->add('description',CKEditorType::class,[
+                'enable' => true,
+                'autoload' => true,
+                'inline' => false,
+//                'async' => true,
+                'config'=> [
+                    //'uiColor' => '#2832aa',
+
+                ],
+//                'config_name' => 'my_config'
             ])
             
         ;
