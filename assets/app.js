@@ -7,10 +7,17 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
-
+import 'fullcalendar/main.min.css'
+import '@fullcalendar/common/main.min.css'
 // start the Stimulus application
 import './bootstrap';
 import TomSelect from "tom-select";
+import {Calendar} from "@fullcalendar/core";
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction';
+
 
 
 const bootstrap = require('bootstrap')
@@ -70,6 +77,76 @@ Array.from(document.querySelectorAll('select[multiple]')).map(bindSelect)
 //     .catch( error => {
 //         console.error( error );
 //     } );
+
+
+window.onload = () => {
+    let calendarElt = document.querySelector("#calendar")
+    let calendar;
+    const data = document.querySelector("#calendar_data").innerHTML
+    console.log( data)
+    calendar = new Calendar(calendarElt, {
+        plugins: [ dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin ],
+        themeSystem: 'bootstrap',
+        initialView: 'timeGridWeek',
+        locale: 'fr',
+        timeZone: 'Europe/Paris',
+        headerToolbar:{
+            start: 'prev,next today',
+            center: 'title',
+            end:'dayGridMonth,timeGridWeek',
+        },
+        editable: true,
+        events: JSON.parse(data),
+        nowIndicator: true,
+        navLinks: true,
+        dateClick: function(info) {
+            alert('clicked ' + info.dateStr);
+        },
+        // eventDidMount: function(info) {
+        //     var tooltip = new Tooltip(info.el, {
+        //         title: info.event.extendedProps.description,
+        //         placement: 'top',
+        //         trigger: 'hover',
+        //         container: 'body'
+        //     });
+        // },
+
+    });
+
+    calendar.on('eventChange', async (e) =>{
+        console.log(e)
+        const data = {
+            'id': e.event.id,
+            'name': e.event.title,
+            'startAt': e.event.start,
+            'endAT': e.event.end,
+            'allDay': e.event.allDay,
+            'textcolor': e.event.textColor,
+            'bgcolor': e.event.backgroundColor,
+            'bordercolor': e.event.borderColor,
+            'description': e.event.extendedProps.description
+        }
+         const response =await fetch(`/api/maj_event/${e.event.id}`,{
+             method:'POST',
+             headers:{
+                 Accept: 'application/json'
+             },
+             body: JSON.stringify(data)
+         })
+        console.log(response)
+        if (response.status === 204)
+        {
+            return null
+        }
+        if (response.ok){
+            return  await response.json()
+        } else {
+            alert("data no persisted /!")
+            e.revert();
+        }
+    })
+    calendar.render()
+}
 
 document.querySelectorAll('.delete_doc').forEach(a => {
     console.log(a)
